@@ -1,7 +1,7 @@
 const GRAPHQL_ENDPOINT = "https://01.gritlab.ax/api/graphql-engine/v1/graphql";
 
 const jwt = localStorage.getItem("jwt");
-console.log("Stored JWT:", jwt);
+// console.log("Stored JWT:", jwt);
 
 if (jwt) {
     showProfile(jwt);
@@ -86,7 +86,7 @@ async function fetchAndDisplayUserInfo() {
                 nameElement.id = "fullname";
                 document.getElementById("profile").appendChild(nameElement);
             }
-            nameElement.textContent = `${user.firstName} ${user.lastName}`;
+            nameElement.textContent = `${user.firstName} ${user.lastName} ID:${user.id}`;
         }
 
     } catch (err) {
