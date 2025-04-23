@@ -1,4 +1,4 @@
-const userInfoQuery = `
+export const userInfoQuery = `
 query {
   user {
     id
@@ -17,7 +17,7 @@ query {
 }
 `;
   
-const xpQuery = `
+export const xpQuery = `
 query {
   transaction(
     where: {type: {_eq: "xp"}}
@@ -31,7 +31,7 @@ query {
 }`
 
 
-const skillsQuery = `
+export const skillsQuery = `
 query {
   user {
     skills: transactions(

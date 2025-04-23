@@ -1,4 +1,7 @@
-body {
+/* Reset some basic styles */
+body, html {
+    margin: 0;
+    padding: 0;
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
@@ -6,53 +9,66 @@ body {
     height: 100vh;
     background-color: #f4f4f4;
 }
+
+/* Login form styling */
 #login-form {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
     display: flex;
     flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    width: 300px;
 }
-input {
-    margin-bottom: 15px;
+
+#login-form input, #login-form button {
     padding: 10px;
     font-size: 14px;
+    border-radius: 5px;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: border-color 0.3s ease;
 }
 
-input:focus {
-    border-color: #007BFF;
-    outline: none;
-}
-
-button {
-    padding: 10px;
-    background-color: #007BFF;
+#login-form button {
+    background-color: #3498db;
     color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 4px;
     cursor: pointer;
+}
+
+/* Error message */
+#login-error {
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Profile Section */
+#profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
     width: 300px;
-    transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #0056b3;
+/* Logout button styling */
+#logout-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
-button:focus {
-    outline: none;
-}
-
-input::placeholder {
-    color: #888;
-}
-
-#login-form input{   
-    width: 280px;
+/* Chart container */
+#xp-chart {
+    width: 100%;
+    max-width: 350px;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: center;
 }

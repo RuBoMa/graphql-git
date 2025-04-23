@@ -1,3 +1,5 @@
+import { userInfoQuery, skillsQuery } from "./query.js";
+import { barChart } from "./graph.js";
 const GRAPHQL_ENDPOINT = "https://01.gritlab.ax/api/graphql-engine/v1/graphql";
 
 const jwt = localStorage.getItem("jwt");
@@ -115,6 +117,8 @@ async function fetchAndDisplayXP() {
         <h3>XP</h3>
         <p>Total XP: ${totalXP.toLocaleString()}</p>
         `;
+    barChart(filteredXP);
+
     } catch (err) {
         console.error("Error fetching XP:", err);
     }
@@ -159,7 +163,7 @@ async function graphqlQuery(query) {
         body: JSON.stringify({ query }),
     });
     const result = await response.json();
-    console.log("Full GraphQL response:", result);
+    // console.log("Full GraphQL response:", result);
     if (result.errors) {
         console.error("GraphQL errors:", result.errors);
     }
