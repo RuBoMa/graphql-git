@@ -120,18 +120,10 @@ async function fetchAndDisplayXP() {
         );
 
         const totalXP = filteredXP.reduce((sum, xp) => sum + xp.amount, 0);
+        const totalKB = totalXP / 1000;
 
-        let xpElement = document.getElementById("xp-info");
-        if (!xpElement) {
-            xpElement = document.createElement("div");
-            xpElement.id = "xp-info";
-            document.getElementById("xp-area").appendChild(xpElement);
-        }
-        container.innerHTML = `
-        <h3>XP Over Time</h3>
-        `;
-    barChart(filteredXP);
-
+        const totalXpElement = document.getElementById("total-xp");
+        totalXpElement.textContent = `${totalKB.toLocaleString(undefined, { maximumFractionDigits: 0 })} KB`;
     } catch (err) {
         console.error("Error fetching XP:", err);
     }
