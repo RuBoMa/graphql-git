@@ -1,10 +1,9 @@
 import { userInfoQuery, skillsQuery } from "./query.js";
 import { barChart } from "./graph.js";
 const GRAPHQL_ENDPOINT = "https://01.gritlab.ax/api/graphql-engine/v1/graphql";
+const SIGNIN_ENDPOINT = "https://01.gritlab.ax/api/auth/signin";
 
 const jwt = localStorage.getItem("jwt");
-// console.log("Stored JWT:", jwt);
-
 if (jwt) {
     showProfile(jwt);
 } else {
@@ -20,7 +19,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     const credentials = btoa(`${identifier}:${password}`);
 
     try {
-        const response = await fetch("https://01.gritlab.ax/api/auth/signin", {
+        const response = await fetch(SIGNIN_ENDPOINT, {
             method: "POST",
             headers: {
                 "Authorization": `Basic ${credentials}`,
@@ -32,7 +31,6 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
         const jwt = await response.text();
         const cleanedJwt = jwt.replace(/"/g, "");
         localStorage.setItem("jwt", cleanedJwt);
-        // console.log("JWT received from the login API:", jwt);
         showProfile(jwt);
     } catch (err) {
         document.getElementById("login-error").textContent = err.message;
@@ -43,6 +41,15 @@ document.getElementById("logout-btn").addEventListener("click", () => {
     localStorage.removeItem("jwt");
     document.getElementById("login-form").style.display = "block";
     document.getElementById("profile").style.display = "none";
+
+    const skillChart = document.getElementById("skills-chart");
+    if (skillChart) {
+        skillChart.innerHTML = "";
+    }
+    const xpInfo = document.getElementById("xp-info");
+    if (xpInfo) {
+        xpInfo.innerHTML = "";
+    }
 })
 
 function showProfile(token) {
@@ -85,9 +92,17 @@ async function fetchAndDisplayUserInfo() {
                 nameElement.id = "fullname";
                 document.getElementById("profile").appendChild(nameElement);
             }
-            nameElement.textContent = `${user.firstName} ${user.lastName} ID:${user.id}`;
+            nameElement.textContent = `Name: ${user.firstName} ${user.lastName}`;
         }
-
+        if (user.campus) {
+            let campusElement = document.getElementById("campus");
+            if (!campusElement) {
+                campusElement = document.createElement("p");
+                campusElement.id = "campus";
+                document.getElementById("profile").appendChild(campusElement);
+            }
+            campusElement.textContent = `Campus: ${user.campus}`;
+        }
     } catch (err) {
         console.error("Error fetching user info:", err);
     }
@@ -97,8 +112,10 @@ async function fetchAndDisplayXP() {
     try {
         const data = await graphqlQuery(userInfoQuery);
         const xps = data?.user?.[0]?.xps || [];
-        const filteredXP = xps.filter(xp => 
-            (xp.path.startsWith('/gritlab/school-curriculum') && !xp.path.includes('/gritlab/school-curriculum/piscine-'))||
+
+        // Filter XP data
+        const filteredXP = xps.filter(xp =>
+            (xp.path.startsWith('/gritlab/school-curriculum') && !xp.path.includes('/gritlab/school-curriculum/piscine-')) ||
             (xp.path.endsWith('piscine-js'))
         );
 
@@ -110,9 +127,8 @@ async function fetchAndDisplayXP() {
             xpElement.id = "xp-info";
             document.getElementById("xp-area").appendChild(xpElement);
         }
-        xpElement.innerHTML = `
-        <h3>XP</h3>
-        <p>Total XP: ${totalXP.toLocaleString()}</p>
+        container.innerHTML = `
+        <h3>XP Over Time</h3>
         `;
     barChart(filteredXP);
 
@@ -126,14 +142,9 @@ async function fetchAndDisplaySkills() {
         const data = await graphqlQuery(skillsQuery);
         const skillTransactions = data?.user?.[0]?.skills || [];
 
-        let skillsElement = document.getElementById("skills");
-        if (!skillsElement) {
-            skillsElement = document.createElement("div");
-            skillsElement.id = "skills";
-            document.getElementById("profile").appendChild(skillsElement);
-        }
+        const chartContainer = document.getElementById("skills-chart");
+        chartContainer.innerHTML = "";
 
-        skillsElement.innerHTML = "<h3>Skills</h3>";
         barChart(skillTransactions, "Skills", "skills-chart");
 
     } catch (err) {
@@ -156,7 +167,6 @@ async function graphqlQuery(query) {
         body: JSON.stringify({ query }),
     });
     const result = await response.json();
-    // console.log("Full GraphQL response:", result);
     if (result.errors) {
         console.error("GraphQL errors:", result.errors);
     }

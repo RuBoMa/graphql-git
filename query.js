@@ -4,6 +4,7 @@ query {
     id
     firstName
     lastName
+    campus
     login
     auditRatio
     totalUp
