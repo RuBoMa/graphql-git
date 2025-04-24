@@ -44,9 +44,6 @@ document.getElementById("logout-btn").addEventListener("click", () => {
     document.getElementById("login-form").style.display = "block";
     document.getElementById("profile").style.display = "none";
 })
-function isValidJWT(token) {
-    return token && token.split(".").length === 3;
-}
 
 function showProfile(token) {
     try {
@@ -111,7 +108,7 @@ async function fetchAndDisplayXP() {
         if (!xpElement) {
             xpElement = document.createElement("div");
             xpElement.id = "xp-info";
-            document.getElementById("profile").appendChild(xpElement);
+            document.getElementById("xp-area").appendChild(xpElement);
         }
         xpElement.innerHTML = `
         <h3>XP</h3>
@@ -136,12 +133,8 @@ async function fetchAndDisplaySkills() {
             document.getElementById("profile").appendChild(skillsElement);
         }
 
-        let skillsHTML = `<h3>Skills</h3><ul>`;
-        skillTransactions.forEach(skill => {
-            skillsHTML += `<li>${skill.type.replace("skill_", "")}: ${skill.amount}</li>`;
-        });
-        skillsHTML += `</ul>`;
-        skillsElement.innerHTML = skillsHTML;
+        skillsElement.innerHTML = "<h3>Skills</h3>";
+        barChart(skillTransactions, "Skills", "skills-chart");
 
     } catch (err) {
         console.error("Error fetching skills:", err);

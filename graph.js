@@ -1,55 +1,51 @@
-export function barChart(xps) {
-    const maxXP = Math.max(...xps.map(xp => xp.amount));
+export function barChart(data, title = "Bar Chart", containerId = "bar-chart") {
+    const maxAmount = Math.max(...data.map(d => d.amount));
     const svgNS = "http://www.w3.org/2000/svg";
     const barHeight = 25;
     const gap = 10;
     const width = 300;
-    const height = Math.min(xps.length * (barHeight + gap), 600);
+    const height = Math.min(data.length * (barHeight + gap), 600);
 
-    // Create SVG element
     const svg = document.createElementNS(svgNS, "svg");
     svg.setAttribute("width", width);
     svg.setAttribute("height", height);
 
-    // Create chart bars and labels
-    xps.forEach((xp, i) => {
-        const barWidth = (xp.amount / maxXP) * (width - 70); // leave room for labels
+    data.forEach((item, i) => {
+        const barWidth = (item.amount / maxAmount) * (width - 70);
 
-        // Create a bar (rectangle)
         const rect = document.createElementNS(svgNS, "rect");
-        rect.setAttribute("x", 70); // Start X position, leave space for labels
+        rect.setAttribute("x", 70);
         rect.setAttribute("y", i * (barHeight + gap));
         rect.setAttribute("width", barWidth);
         rect.setAttribute("height", barHeight);
-        rect.setAttribute("fill", "#3498db");
+        rect.setAttribute("fill", "#2ecc71"); // Green for skills
         svg.appendChild(rect);
 
-        // Create a label for the bar
         const label = document.createElementNS(svgNS, "text");
-        label.setAttribute("x", 0); // X position for the label
-        label.setAttribute("y", i * (barHeight + gap) + 15); // Adjust vertical position
-        label.textContent = shortenPath(xp.path);
+        label.setAttribute("x", 0);
+        label.setAttribute("y", i * (barHeight + gap) + 15);
+        label.textContent = item.type.replace("skill_", ""); // Clean skill label
         label.setAttribute("font-size", "10");
         svg.appendChild(label);
     });
 
-    // Add the SVG to the DOM
-    let chartContainer = document.getElementById("xp-chart");
+    let chartContainer = document.getElementById(containerId);
     if (!chartContainer) {
         chartContainer = document.createElement("div");
-        chartContainer.id = "xp-chart";
-        chartContainer.style.marginTop = "20px";  // Add some space above chart
+        chartContainer.id = containerId;
         document.getElementById("profile").appendChild(chartContainer);
     }
 
-    // Clear previous chart before adding a new one
-    chartContainer.innerHTML = ""; 
-    chartContainer.appendChild(svg);
-    chartContainer.style.height = `${height}px`; // Set height of the container
-}
+    chartContainer.innerHTML = `<h3>${title}</h3>`;
+    
+    const scrollWrapper = document.createElement("div");
+    scrollWrapper.style.maxHeight = "500px";
+    scrollWrapper.style.overflowY = "auto";
+    scrollWrapper.style.border = "1px solid #ccc";
+    scrollWrapper.style.padding = "10px";
+    scrollWrapper.style.borderRadius = "10px";
+    scrollWrapper.style.backgroundColor = "#fff";
 
-// Simple path label shortening
-function shortenPath(path) {
-    const parts = path.split('/');
-    return parts.slice(-2).join('/'); // Return last two segments
+    scrollWrapper.appendChild(svg);
+    chartContainer.appendChild(scrollWrapper);
 }
