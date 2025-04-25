@@ -41,14 +41,11 @@ document.getElementById("logout-btn").addEventListener("click", () => {
     localStorage.removeItem("jwt");
     document.getElementById("login-form").style.display = "block";
     document.getElementById("profile").style.display = "none";
+    document.getElementById("xp-chart").style.display = "none";
 
     const skillChart = document.getElementById("skills-chart");
     if (skillChart) {
         skillChart.innerHTML = "";
-    }
-    const xpInfo = document.getElementById("xp-info");
-    if (xpInfo) {
-        xpInfo.innerHTML = "";
     }
 })
 
@@ -119,7 +116,7 @@ async function fetchAndDisplayXP() {
         );
 
         const sortedXP = filteredXP.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-console.log(sortedXP);
+
         const progression = [];
         let cumulative = 0;
         for (const xp of sortedXP) {
@@ -140,7 +137,6 @@ console.log(sortedXP);
         console.error("Error fetching XP:", err);
     }
 }
-
 
 async function fetchAndDisplaySkills() {
     try {

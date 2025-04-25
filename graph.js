@@ -1,4 +1,4 @@
-export function barChart(data, title = "Bar Chart", containerId = "bar-chart") {
+export function barChart(data, title = "Skills", containerId = "bar-chart") {
     const maxAmount = Math.max(...data.map(d => d.amount));
     const svgNS = "http://www.w3.org/2000/svg";
     const barHeight = 25;
@@ -50,7 +50,7 @@ export function barChart(data, title = "Bar Chart", containerId = "bar-chart") {
     const scrollWrapper = document.createElement("div");
     scrollWrapper.style.maxHeight = "550px";
     scrollWrapper.style.overflowY = "auto";
-    scrollWrapper.style.border = "1px solid #ccc";
+    scrollWrapper.style.border = "1px solid black";
     scrollWrapper.style.padding = "10px";
     scrollWrapper.style.borderRadius = "10px";
     scrollWrapper.style.backgroundColor = "#fff";
@@ -66,7 +66,7 @@ export function barChart(data, title = "Bar Chart", containerId = "bar-chart") {
     chartContainer.appendChild(scrollWrapper);
 }
 
-export function lineGraph(progression) {
+export function lineGraph(progression, title = "XP Progression") {
     const svgNS = "http://www.w3.org/2000/svg";
     const width = 600;
     const height = 300;
@@ -79,6 +79,12 @@ export function lineGraph(progression) {
 
     const container = document.getElementById("xp-chart");
     container.innerHTML = "";
+
+    const titleElement = document.createElement("h3");
+    titleElement.textContent = title;
+    titleElement.style.textAlign = "center";
+    titleElement.style.marginBottom = "10px";
+    container.appendChild(titleElement);
     container.appendChild(svg);
 
     const xScale = (i) =>
@@ -169,7 +175,7 @@ export function lineGraph(progression) {
     const xpChart = document.getElementById("xp-chart");
     xpChart.style.maxHeight = "550px";
     xpChart.style.overflowY = "auto";
-    xpChart.style.border = "1px solid #ccc";
+    xpChart.style.border = "1px solid black";
     xpChart.style.padding = "10px";
     xpChart.style.borderRadius = "10px";
     xpChart.style.backgroundColor = "#fff";
