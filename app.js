@@ -124,14 +124,22 @@ async function fetchAndDisplayXP() {
             progression.push({
                 amount: cumulative,
                 createdAt: xp.createdAt
-        });
-    }
+            });
+        }
 
         const totalXP = cumulative;
         const totalKB = totalXP / 1000;
         document.getElementById("total-xp").textContent =
             `${totalKB.toLocaleString(undefined, { maximumFractionDigits: 0 })} KB`;
 
+        let chartContainer = document.getElementById("xp-chart");
+        if (!chartContainer) {
+            chartContainer = document.createElement("div");
+            chartContainer.id = "xp-chart";
+            document.getElementById("profile").appendChild(chartContainer);
+        }
+        chartContainer.style.display = "block";
+        chartContainer.innerHTML = "";
         lineGraph(progression);
     } catch (err) {
         console.error("Error fetching XP:", err);
