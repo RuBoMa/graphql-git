@@ -22,7 +22,7 @@ export const xpQuery = `
 query {
   transaction(
     where: {type: {_eq: "xp"}}
-    order_by: {createdAt: asc}
+    order_by: {createdAt: desc}
     limit: 1000
   ) {
     amount

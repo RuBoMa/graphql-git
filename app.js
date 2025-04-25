@@ -1,5 +1,5 @@
-import { userInfoQuery, skillsQuery } from "./query.js";
-import { barChart } from "./graph.js";
+import { userInfoQuery, skillsQuery, xpQuery } from "./query.js";
+import { barChart, lineGraph } from "./graph.js";
 const GRAPHQL_ENDPOINT = "https://01.gritlab.ax/api/graphql-engine/v1/graphql";
 const SIGNIN_ENDPOINT = "https://01.gritlab.ax/api/auth/signin";
 
@@ -110,24 +110,37 @@ async function fetchAndDisplayUserInfo() {
 
 async function fetchAndDisplayXP() {
     try {
-        const data = await graphqlQuery(userInfoQuery);
-        const xps = data?.user?.[0]?.xps || [];
+        const data = await graphqlQuery(xpQuery);
+        const transaction = data?.transaction || [];
 
-        // Filter XP data
-        const filteredXP = xps.filter(xp =>
+        const filteredXP = transaction.filter(xp =>
             (xp.path.startsWith('/gritlab/school-curriculum') && !xp.path.includes('/gritlab/school-curriculum/piscine-')) ||
-            (xp.path.endsWith('piscine-js'))
+            xp.path.endsWith('piscine-js')
         );
 
-        const totalXP = filteredXP.reduce((sum, xp) => sum + xp.amount, 0);
-        const totalKB = totalXP / 1000;
+        const sortedXP = filteredXP.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+console.log(sortedXP);
+        const progression = [];
+        let cumulative = 0;
+        for (const xp of sortedXP) {
+            cumulative += xp.amount;
+            progression.push({
+                amount: cumulative,
+                createdAt: xp.createdAt
+        });
+    }
 
-        const totalXpElement = document.getElementById("total-xp");
-        totalXpElement.textContent = `${totalKB.toLocaleString(undefined, { maximumFractionDigits: 0 })} KB`;
+        const totalXP = cumulative;
+        const totalKB = totalXP / 1000;
+        document.getElementById("total-xp").textContent =
+            `${totalKB.toLocaleString(undefined, { maximumFractionDigits: 0 })} KB`;
+
+        lineGraph(progression);
     } catch (err) {
         console.error("Error fetching XP:", err);
     }
 }
+
 
 async function fetchAndDisplaySkills() {
     try {
