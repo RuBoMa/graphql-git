@@ -82,24 +82,12 @@ async function fetchAndDisplayUserInfo() {
         document.getElementById("username").textContent = user.login;
         document.getElementById("userid").textContent = user.id;
 
-        if (user.firstName && user.lastName) {
-            let nameElement = document.getElementById("fullname");
-            if (!nameElement) {
-                nameElement = document.createElement("p");
-                nameElement.id = "fullname";
-                document.getElementById("profile").appendChild(nameElement);
-            }
-            nameElement.textContent = `Name: ${user.firstName} ${user.lastName}`;
-        }
-        if (user.campus) {
-            let campusElement = document.getElementById("campus");
-            if (!campusElement) {
-                campusElement = document.createElement("p");
-                campusElement.id = "campus";
-                document.getElementById("profile").appendChild(campusElement);
-            }
-            campusElement.textContent = `Campus: ${user.campus}`;
-        }
+        document.getElementById("audit-ratio").textContent = `Audit Ratio: ${(user.auditRatio * 1).toFixed(1)}`;
+        document.getElementById("email").textContent = `Email: ${user.attrs?.email}`;
+        document.getElementById("campus").textContent = `Campus: ${user.campus}`;
+        document.getElementById("nationality").textContent = `Nationality: ${user.attrs?.nationality}`;
+        document.getElementById("fullname").textContent = `Name: ${user.firstName} ${user.lastName}`;
+
     } catch (err) {
         console.error("Error fetching user info:", err);
     }
