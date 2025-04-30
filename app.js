@@ -15,7 +15,12 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const identifier = e.target.identifier.value;
     const password = e.target.password.value;
-    // binary to ascii
+
+    await loginUser(identifier, password)
+});
+document.getElementById("logout-btn").addEventListener("click", logoutUser);
+
+async function loginUser(identifier, password) {
     const credentials = btoa(`${identifier}:${password}`);
 
     try {
@@ -35,9 +40,9 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     } catch (err) {
         document.getElementById("login-error").textContent = err.message;
     }
-});
-
-document.getElementById("logout-btn").addEventListener("click", () => {
+}
+    
+function logoutUser(){
     localStorage.removeItem("jwt");
     document.getElementById("login-form").style.display = "block";
     document.getElementById("profile").style.display = "none";
@@ -47,7 +52,8 @@ document.getElementById("logout-btn").addEventListener("click", () => {
     if (skillChart) {
         skillChart.innerHTML = "";
     }
-})
+}
+    
 
 function showProfile(token) {
     try {
@@ -120,14 +126,9 @@ async function fetchAndDisplayXP() {
         document.getElementById("total-xp").textContent =
             `${totalKB.toLocaleString(undefined, { maximumFractionDigits: 0 })} KB`;
 
-        let chartContainer = document.getElementById("xp-chart");
-        if (!chartContainer) {
-            chartContainer = document.createElement("div");
-            chartContainer.id = "xp-chart";
-            document.getElementById("profile").appendChild(chartContainer);
-        }
-        chartContainer.style.display = "block";
-        chartContainer.innerHTML = "";
+        // let chartContainer = document.getElementById("xp-chart");
+        // chartContainer.style.display = "block";
+        // chartContainer.innerHTML = "";
         lineGraph(progression);
     } catch (err) {
         console.error("Error fetching XP:", err);
@@ -139,8 +140,8 @@ async function fetchAndDisplaySkills() {
         const data = await graphqlQuery(skillsQuery);
         const skillTransactions = data?.user?.[0]?.skills || [];
 
-        const chartContainer = document.getElementById("skills-chart");
-        chartContainer.innerHTML = "";
+        // const chartContainer = document.getElementById("skills-chart");
+        // chartContainer.innerHTML = "";
 
         barChart(skillTransactions, "Skills", "skills-chart");
 
