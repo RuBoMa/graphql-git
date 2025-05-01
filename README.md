@@ -35,7 +35,7 @@ You can check out the hosted version here: https://ruboma.github.io/graphql-git/
    - Displays data retrieved via GraphQL.
    - Includes user stats and two types of graphs, such as:
      - XP progression over time
-     - Audit ratio
+     - Skills
 
 4. **Logout**:
    - Logs the user out and clears the JWT from local storage.
