@@ -83,3 +83,22 @@ body {
     width: 100%;
     margin-top: 50px;
 }
+.chart-scroll-wrapper {
+    max-height: 550px;
+    overflow-y: auto;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #fff;
+    margin-bottom: 40px;
+}
+
+.chart-title {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.xp-chart-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+}

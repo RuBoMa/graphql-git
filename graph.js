@@ -38,28 +38,17 @@ export function barChart(data, title = "Skills", containerId = "bar-chart") {
         svg.appendChild(valueLabel);
     });
 
-    let chartContainer = document.getElementById(containerId);
-    if (!chartContainer) {
-        chartContainer = document.createElement("div");
-        chartContainer.id = containerId;
-        document.getElementById("profile").appendChild(chartContainer);
-    }
+    const chartContainer = document.getElementById(containerId);
+    if (!chartContainer) return;
 
     chartContainer.innerHTML = "";
 
     const scrollWrapper = document.createElement("div");
-    scrollWrapper.style.maxHeight = "550px";
-    scrollWrapper.style.overflowY = "auto";
-    scrollWrapper.style.border = "1px solid black";
-    scrollWrapper.style.padding = "10px";
-    scrollWrapper.style.borderRadius = "10px";
-    scrollWrapper.style.backgroundColor = "#fff";
-    scrollWrapper.style.marginBottom = "40px";
+    scrollWrapper.className = "chart-scroll-wrapper";
 
     const titleElement = document.createElement("h3");
     titleElement.textContent = title;
-    titleElement.style.textAlign = "center";
-    titleElement.style.marginBottom = "10px";
+    titleElement.className = "chart-title";
     scrollWrapper.appendChild(titleElement);
 
     scrollWrapper.appendChild(svg);
@@ -82,8 +71,7 @@ export function lineGraph(progression, title = "XP Progression") {
 
     const titleElement = document.createElement("h3");
     titleElement.textContent = title;
-    titleElement.style.textAlign = "center";
-    titleElement.style.marginBottom = "10px";
+    titleElement.className = "chart-title";
     container.appendChild(titleElement);
     container.appendChild(svg);
 
@@ -173,13 +161,6 @@ export function lineGraph(progression, title = "XP Progression") {
         svg.appendChild(circle);
     }
     const xpChart = document.getElementById("xp-chart");
-    xpChart.style.maxHeight = "550px";
-    xpChart.style.overflowY = "auto";
-    xpChart.style.border = "1px solid black";
-    xpChart.style.padding = "10px";
-    xpChart.style.borderRadius = "10px";
-    xpChart.style.backgroundColor = "#fff";
-    xpChart.style.maxWidth = "600px";
-    xpChart.style.margin = "0 auto";
+    xpChart.classList.add("chart-scroll-wrapper", "xp-chart-wrapper");
 
 }
