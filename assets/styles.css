@@ -17,6 +17,12 @@ body {
     background-color: white;
     width: 300px;
 }
+#login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
 #login-form input, #login-form button {
     padding: 10px;

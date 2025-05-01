@@ -3,23 +3,30 @@ import { barChart, lineGraph } from "./graph.js";
 const GRAPHQL_ENDPOINT = "https://01.gritlab.ax/api/graphql-engine/v1/graphql";
 const SIGNIN_ENDPOINT = "https://01.gritlab.ax/api/auth/signin";
 
-const jwt = localStorage.getItem("jwt");
-if (jwt) {
-    showProfile(jwt);
-} else {
-    document.getElementById("login-form").style.display = "block";
-    document.getElementById("profile").style.display = "none";
+document.addEventListener("DOMContentLoaded", init);
+
+function init() {
+    // Event listners
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const identifier = e.target.identifier.value;
+        const password = e.target.password.value;
+        await loginUser(identifier, password)
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", logoutUser);
+
+    checkAuth();
 }
 
-document.getElementById("login-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const identifier = e.target.identifier.value;
-    const password = e.target.password.value;
-
-    await loginUser(identifier, password)
-});
-document.getElementById("logout-btn").addEventListener("click", logoutUser);
-
+function checkAuth() {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt) {
+        showProfile(jwt);
+    } else {
+        showLoginForm();
+    }
+}
 async function loginUser(identifier, password) {
     const credentials = btoa(`${identifier}:${password}`);
 
@@ -41,19 +48,27 @@ async function loginUser(identifier, password) {
         document.getElementById("login-error").textContent = err.message;
     }
 }
-    
-function logoutUser(){
+
+function logoutUser() {
     localStorage.removeItem("jwt");
     document.getElementById("login-form").style.display = "block";
     document.getElementById("profile").style.display = "none";
     document.getElementById("xp-chart").style.display = "none";
+
+    document.getElementById("login-container").style.display = "flex";
+    document.getElementById("login-error").textContent = "";
+
 
     const skillChart = document.getElementById("skills-chart");
     if (skillChart) {
         skillChart.innerHTML = "";
     }
 }
-    
+function showLoginForm() {
+    document.getElementById("login-form").style.display = "block";
+    document.getElementById("profile").style.display = "none";
+    document.getElementById("xp-chart").style.display = "none";
+}
 
 function showProfile(token) {
     try {
@@ -65,9 +80,13 @@ function showProfile(token) {
             document.getElementById("login-error").textContent = "Your session has expired. Please log in again.";
             return;
         }
+        // hide login
+        document.getElementById("login-container").style.display = "none";
 
+        // profile content
         document.getElementById("login-form").style.display = "none";
         document.getElementById("profile").style.display = "block";
+        document.getElementById("xp-chart").style.display = "block";
         document.getElementById("logout-btn").style.display = "inline-block";
 
         fetchAndDisplayUserInfo();
@@ -126,9 +145,6 @@ async function fetchAndDisplayXP() {
         document.getElementById("total-xp").textContent =
             `${totalKB.toLocaleString(undefined, { maximumFractionDigits: 0 })} KB`;
 
-        // let chartContainer = document.getElementById("xp-chart");
-        // chartContainer.style.display = "block";
-        // chartContainer.innerHTML = "";
         lineGraph(progression);
     } catch (err) {
         console.error("Error fetching XP:", err);
@@ -139,9 +155,6 @@ async function fetchAndDisplaySkills() {
     try {
         const data = await graphqlQuery(skillsQuery);
         const skillTransactions = data?.user?.[0]?.skills || [];
-
-        // const chartContainer = document.getElementById("skills-chart");
-        // chartContainer.innerHTML = "";
 
         barChart(skillTransactions, "Skills", "skills-chart");
 
