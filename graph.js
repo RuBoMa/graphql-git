@@ -19,13 +19,13 @@ export function barChart(data, title = "Skills", containerId = "bar-chart") {
         rect.setAttribute("y", i * (barHeight + gap));
         rect.setAttribute("width", barWidth);
         rect.setAttribute("height", barHeight);
-        rect.setAttribute("fill", "#2ecc71"); // Green for skills
+        rect.setAttribute("fill", "#2ecc71");
         svg.appendChild(rect);
         // skill bar left
         const label = document.createElementNS(svgNS, "text");
         label.setAttribute("x", 0);
         label.setAttribute("y", i * (barHeight + gap) + 15);
-        label.textContent = item.type.replace("skill_", ""); // Clean skill label
+        label.textContent = item.type.replace("skill_", "");
         label.setAttribute("font-size", "14");
         svg.appendChild(label);
 
@@ -61,7 +61,9 @@ export function lineGraph(progression, title = "XP Progression") {
     const height = 300;
     const padding = 60;
 
-    const maxXP = Math.max(...progression.map(p => p.amount));
+    const rawMax = Math.max(...progression.map(p => p.amount));
+    const roundTo = 100000;
+    const maxXP = Math.ceil(rawMax / roundTo) * roundTo;
     const svg = document.createElementNS(svgNS, "svg");
     svg.setAttribute("width", width);
     svg.setAttribute("height", height);
@@ -98,10 +100,11 @@ export function lineGraph(progression, title = "XP Progression") {
     xAxis.setAttribute("stroke", "black");
     svg.appendChild(xAxis);
 
-    // Y Ticks and labels
-    const numYTicks = 5;
-    for (let i = 0; i <= numYTicks; i++) {
-        const value = i * maxXP / numYTicks;
+    const tickStep = 100000;
+    const maxTicks = Math.ceil(maxXP / tickStep);
+
+    for (let i = 0; i <= maxTicks; i++) {
+        const value = i * tickStep;
         const y = yScale(value);
 
         const line = document.createElementNS(svgNS, "line");
@@ -118,12 +121,12 @@ export function lineGraph(progression, title = "XP Progression") {
         text.setAttribute("y", y + 4);
         text.setAttribute("text-anchor", "end");
         text.setAttribute("font-size", "10");
-        text.textContent = `${Math.round(value / 1000)} KB`;
+        text.textContent = `${value.toLocaleString()}`;
         svg.appendChild(text);
     }
 
     // X Axis labels
-    const labelStep = Math.ceil(progression.length / 10);
+    const labelStep = Math.ceil(progression.length / 6);
     for (let i = 0; i < progression.length; i += labelStep) {
         const x = xScale(i);
         const date = new Date(progression[i].createdAt);
