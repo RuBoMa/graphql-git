@@ -1,3 +1,10 @@
+/**
+ * Creates a horizontal bar chart visualization of the provided skills data
+ * 
+ * @param {Array<Object>} data - Array of skill objects, each containing type and amount properties
+ * @param {string} [title="Skills"] - Title to display above the chart
+ * @param {string} [containerId="bar-chart"] - ID of the DOM element to contain the chart
+ */
 export function barChart(data, title = "Skills", containerId = "bar-chart") {
     const maxAmount = Math.max(...data.map(d => d.amount));
     const svgNS = "http://www.w3.org/2000/svg";
@@ -54,16 +61,22 @@ export function barChart(data, title = "Skills", containerId = "bar-chart") {
     scrollWrapper.appendChild(svg);
     chartContainer.appendChild(scrollWrapper);
 }
-
+/**
+ * Creates a line graph visualization of XP progression over time
+ * 
+ * @param {Array<Object>} progression - Array of data points with amount and createdAt properties
+ * @param {string} [title="XP Progression"] - Title to display above the chart
+ */
 export function lineGraph(progression, title = "XP Progression") {
     const svgNS = "http://www.w3.org/2000/svg";
     const width = 600;
     const height = 300;
     const padding = 60;
-
+    // calculate scale for y-axis
     const rawMax = Math.max(...progression.map(p => p.amount));
     const roundTo = 100000;
     const maxXP = Math.ceil(rawMax / roundTo) * roundTo;
+    
     const svg = document.createElementNS(svgNS, "svg");
     svg.setAttribute("width", width);
     svg.setAttribute("height", height);
@@ -76,7 +89,13 @@ export function lineGraph(progression, title = "XP Progression") {
     titleElement.className = "chart-title";
     container.appendChild(titleElement);
     container.appendChild(svg);
-
+/**
+    * Scale function to convert index to x coordinate and XP amount to y coordinate
+    * @param {number} i - Index in progression array
+    * @returns {number} Scaled x coordinate
+    * @param {number} xp - XP amount
+    * @returns {number} Scaled y coordinate
+    */
     const xScale = (i) =>
         i * (width - 2 * padding) / (progression.length - 1) + padding;
     const yScale = (xp) =>
@@ -99,7 +118,7 @@ export function lineGraph(progression, title = "XP Progression") {
     xAxis.setAttribute("y2", height - padding);
     xAxis.setAttribute("stroke", "black");
     svg.appendChild(xAxis);
-
+    // add y-axis grid lines and labels
     const tickStep = 100000;
     const maxTicks = Math.ceil(maxXP / tickStep);
 
@@ -141,7 +160,7 @@ export function lineGraph(progression, title = "XP Progression") {
         svg.appendChild(text);
     }
 
-    // Line path
+    // Create line path connecting all data points
     let pathData = `M ${xScale(0)} ${yScale(progression[0].amount)} `;
     for (let i = 1; i < progression.length; i++) {
         pathData += `L ${xScale(i)} ${yScale(progression[i].amount)} `;
@@ -154,7 +173,7 @@ export function lineGraph(progression, title = "XP Progression") {
     path.setAttribute("stroke-width", 2);
     svg.appendChild(path);
 
-    // Dots
+    // add dots for each data point
     for (let i = 0; i < progression.length; i++) {
         const circle = document.createElementNS(svgNS, "circle");
         circle.setAttribute("cx", xScale(i));

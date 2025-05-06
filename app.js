@@ -18,7 +18,10 @@ function init() {
 
     checkAuth();
 }
-
+/**
+ * Checks if a valid JWT token exists in local storage
+ * Shows profile if authenticated, or login form if not
+ */
 function checkAuth() {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
@@ -27,6 +30,15 @@ function checkAuth() {
         showLoginForm();
     }
 }
+/**
+ * Authenticates a user using provided credentials
+ * Stores JWT token in local storage upon successful login
+ * 
+ * @async
+ * @param {string} identifier - User's login identifier
+ * @param {string} password - User's password
+ * @returns {Promise<string|undefined>} Promise that resolves with JWT token or undefined if authentication fails
+ */
 async function loginUser(identifier, password) {
     const credentials = btoa(`${identifier}:${password}`);
 
@@ -48,7 +60,10 @@ async function loginUser(identifier, password) {
         document.getElementById("login-error").textContent = err.message;
     }
 }
-
+/**
+ * Logs user out by removing JTW from the localstorage
+ * resets the UI to show login page
+ */
 function logoutUser() {
     localStorage.removeItem("jwt");
     document.getElementById("login-form").style.display = "block";
@@ -69,7 +84,12 @@ function showLoginForm() {
     document.getElementById("profile").style.display = "none";
     document.getElementById("xp-chart").style.display = "none";
 }
-
+/**
+ * Displays user profile if JWT is valid
+ * Validates token expiration and fetches user data
+ * 
+ * @param {string} token - JWT authentication token
+ */
 function showProfile(token) {
     try {
         const payload = JSON.parse(atob(token.split(".")[1]));
@@ -97,7 +117,13 @@ function showProfile(token) {
         console.error("JWT validation failed:", err);
     }
 }
-
+/**
+ * Fetches and displays user information from GraphQL API
+ * Updates DOM elements with user data
+ * 
+ * @async
+ * @returns {Promise<Object|undefined>} Promise that resolves when user data is fetched and displayed
+ */
 async function fetchAndDisplayUserInfo() {
     try {
         const data = await graphqlQuery(userInfoQuery);
@@ -117,7 +143,13 @@ async function fetchAndDisplayUserInfo() {
         console.error("Error fetching user info:", err);
     }
 }
-
+/**
+ * Fetches and displays user XP data from GraphQL API
+ * Filters relevant XP transactions and visualizes progression
+ * 
+ * @async
+ * @returns {Promise<Object|undefined>} Promise that resolves when XP data is fetched, processed and displayed
+ */
 async function fetchAndDisplayXP() {
     try {
         const data = await graphqlQuery(xpQuery);
@@ -150,7 +182,13 @@ async function fetchAndDisplayXP() {
         console.error("Error fetching XP:", err);
     }
 }
-
+/**
+ * Fetches and displays user skills data from GraphQL API
+ * Creates a bar chart visualization of skills
+ * 
+ * @async
+ * @returns {Promise<Object|undefined>} Promise that resolves when skills data is fetched and displayed
+ */
 async function fetchAndDisplaySkills() {
     try {
         const data = await graphqlQuery(skillsQuery);
@@ -162,7 +200,14 @@ async function fetchAndDisplaySkills() {
         console.error("Error fetching skills:", err);
     }
 }
-
+/**
+ * Executes a GraphQL query against the API endpoint
+ * Uses JWT token for authorization
+ * 
+ * @async
+ * @param {string} query - GraphQL query string
+ * @returns {Promise<Object|undefined>} Query result data or undefined if error occurs
+ */
 async function graphqlQuery(query) {
     const token = localStorage.getItem("jwt")?.trim();
     if (!token) {
